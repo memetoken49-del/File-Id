@@ -3,8 +3,8 @@ from telethon import TelegramClient
 import os
 
 API_ID = int(os.getenv("API_ID"))
-API_HASH = os.getenv("API_HASH"))
-BOT_TOKEN = os.getenv("BOT_TOKEN"))
+API_HASH = os.getenv("API_HASH")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 CHANNEL = "BinancePumpSignals100"
 MESSAGE_ID = 21191  # message that contains the sticker
@@ -17,7 +17,7 @@ async def main():
     
     if msg.document:  # sticker is a document
         print("Sticker file_id:", msg.document.id)
-        print("Access hash:", msg.document.access_hash)  # needed for sending via file_id
+        print("Access hash:", msg.document.access_hash)
         print("DC id:", msg.document.dc_id)
     else:
         print("No document/sticker found in this message")
