@@ -6,7 +6,7 @@ from telethon import TelegramClient
 API_ID = int(os.getenv("API_ID", "0"))
 API_HASH = os.getenv("API_HASH", "")
 BOT_TOKEN = os.getenv("BOT_TOKEN", "")
-CHANNEL_USERNAME = os.getenv("CHANNEL_USERNAME", "")
+CHANNEL_USERNAME = os.getenv("CHANNEL_USERNAME", "")  # no @
 MESSAGE_ID = int(os.getenv("MESSAGE_ID", "0"))
 
 async def main():
@@ -15,25 +15,25 @@ async def main():
 
     try:
         msg = await client.get_messages(CHANNEL_USERNAME, ids=MESSAGE_ID)
-
         file_id = None
 
-        # Case 1: Telegram message has a sticker
-        if hasattr(msg, 'sticker') and msg.sticker:
-            if hasattr(msg.sticker, 'file'):
+        # Case 1: sticker object exists
+        if getattr(msg, "sticker", None):
+            if hasattr(msg.sticker, "file"):
                 file_id = msg.sticker.file.id
-            elif hasattr(msg.sticker, 'document'):
+            elif hasattr(msg.sticker, "document"):
                 file_id = msg.sticker.document.id
 
-        # Case 2: Message is a document (some stickers are sent this way)
-        elif hasattr(msg, 'document') and msg.document:
-            file_id = msg.document.id
+        # Case 2: sticker is a document (common in channels)
+        elif getattr(msg, "document", None):
+            if msg.document.mime_type == "image/webp":
+                file_id = msg.document.id
 
         if file_id:
             print("Sticker FILE ID:", file_id)
         else:
-            print("❌ No sticker found in this message")
-
+            print("❌ No sticker found in this message. Maybe it’s an animated sticker (tgs) or video sticker (webm).")
+    
     except Exception as e:
         print(f"❌ Error fetching message: {e}")
     finally:
