@@ -22,7 +22,10 @@ async def main():
     try:
         msg = await client.get_messages(CHANNEL_USERNAME, ids=MESSAGE_ID)
         if msg.sticker:
-            print("Sticker FILE ID:", msg.sticker.file.id)
+            print("Sticker FILE ID:", msg.sticker.document.id)
+        elif msg.document and msg.document.mime_type.startswith("image/webp"):
+            # Sometimes stickers are Document with webp mime type
+            print("Sticker FILE ID (document):", msg.document.id)
         else:
             print("❌ No sticker found in this message")
     except Exception as e:
